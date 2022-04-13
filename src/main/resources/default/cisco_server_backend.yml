@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: cisco-task
+springdoc:
+  api-docs:
+    path: /docs
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: ${COMPRESSION_ENABLED:true}
+    mime-types: application/json, text/event-stream
+    min-response-size: 1024
+  error:
+    include-binding-errors: always
+    include-message: always
+
+management:
+  server:
+    port: ${MANAGEMENT_PORT:8081}
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"

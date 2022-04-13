@@ -1,0 +1,6 @@
+spring:
+  config:
+    import:
+      - optional:classpath:/default/cisco_server_backend.yml
+      - optional:classpath:/default/cisco_core_database.yml
+      - optional:classpath:/default/cisco_core_jpa.yml

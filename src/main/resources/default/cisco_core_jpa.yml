@@ -1,0 +1,29 @@
+# spring jpa parameters
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      javax:
+        persistence:
+          sharedCache:
+            mode: ALL
+      hibernate:
+        format_sql: true
+        cache:
+          use_query_cache: false
+          use_second_level_cache: false
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+        generate_statistics: true
+        jdbc:
+          batch_size: 200
+        order_inserts: true
+        order_updates: true
+  datasource:
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 30000
+      maxLifetime: 2000000
+      maximumPoolSize: 20
+      minimumIdle: 5
+      poolName: SpringBootJPAHikariCP

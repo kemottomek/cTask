@@ -1,0 +1,261 @@
+openapi: 3.0.1
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /cases/status/{status}:
+    get:
+      summary: Returns a list of cases
+      description: Returns a list of cases
+      operationId: getCasesWithStatus
+      tags:
+        - case-controller
+      parameters:
+        - in: path
+          name: status
+          required: true
+          schema:
+            type: string
+            enum:
+              - OPEN
+              - CLOSED
+      responses:
+        200:
+          description: cases found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Case'
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases/user/{userId}:
+    get:
+      summary: Returns a list of openedCases
+      description: Returns a list of openedCases
+      operationId: getOpenCases
+      tags:
+        - case-controller
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: cases found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Case'
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases/user/{userId}/status/{status}:
+    get:
+      summary: Returns a list of cases per user and status
+      description: Returns a list of cases per user and status
+      operationId: getOpenCases2
+      tags:
+        - case-controller
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: status
+          required: true
+          schema:
+            type: string
+            enum:
+              - OPEN
+              - CLOSED
+      responses:
+        200:
+          description: cases found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Case'
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases/{caseId}:
+    get:
+      summary: Returns a case
+      description: Returns a case
+      operationId: getCase
+      tags:
+        - case-controller
+      parameters:
+        - in: path
+          name: caseId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: case found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+        404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases/create:
+    post:
+      summary: Create case
+      description: Create case
+      operationId: createCase
+      tags:
+        - case-controller
+      requestBody:
+        description: "Case body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Case'
+      responses:
+        200:
+          description: case created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+        500:
+          description: others
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases/{caseId}/addNote:
+    post:
+      summary: Add note
+      description: Add note
+      operationId: addNote
+      tags:
+        - case-controller
+      parameters:
+        - in: path
+          name: caseId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: "Note body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+      responses:
+        200:
+          description: case created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        500:
+          description: others
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        reason:
+          type: string
+          description: Reason
+        status:
+          type: string
+          description: HTTP Error code extension
+    Note:
+      type: object
+      description: Note object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description:  note id
+          readOnly: true
+        details:
+          type: string
+    User:
+      type: object
+      description: User object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description:  user id
+          readOnly: true
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+
+    Case:
+      type: object
+      description: Case model
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+            - OPEN
+            - CLOSED
+        user:
+          $ref: '#/components/schemas/User'
+        notes:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Note'

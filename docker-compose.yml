@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  cisco-postgres:
+    image: 'bitnami/postgresql:13.4.0'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=cisco
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  cisco-backend:
+    image: cisco/task1
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - DATABASE_TYPE=postgresql
+      - POSTGRESQL_DATABASE_HOST=cisco-postgres
+      - POSTGRESQL_DATABASE_USERNAME=admin
+      - POSTGRESQL_DATABASE_PASSWORD=admin
+      - POSTGRESQL_DATABASE_PORT=5432
+      - POSTGRESQL_DATABASE_NAME=cisco
+      - SERVER_PORT=8080
+      - MACHINE_OPTS=--add-opens java.base/java.lang=ALL-UNNAMED
+      - HIBERNATE_GENERATE_STATISTICS=true
